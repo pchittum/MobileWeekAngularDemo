@@ -1,0 +1,69 @@
+<div ng-show="isWorking()">
+    <p>Working</p>
+</div>
+
+
+<div ng-show="!isWorking()">
+    <!-- This div is only displayed in deskcops (see below for mobile phones)-->
+    <div class="hidden-phone">
+        <div style="float: left">
+            <div style="margin-bottom: 10px;">
+                <input type="text" ng-model="searchTerm" class="search-query" placeholder="Search">
+
+
+                <p class="btn btn-primary" ng-click="doSearch(searchString)">Go</p>
+            </div>
+        </div>
+<!-- maybe comment out? -->
+        <div style="float: right">
+            <a href="#/new" class="btn btn-primary">New</a>
+        </div>
+        <div style="clear: both"></div>
+
+
+
+
+        <table width="80%" class="table">
+            <thead>
+            <tr>
+                <th class='hidden-phone'>Id</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Annual Revenue</th>
+                <th>Industry</th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            <tr ng-repeat="account in accounts">
+                <td class='hidden-phone'>{{account.Id}}</td>
+                <td>{{account.Name}}</td>
+                <td>{{account.Type}}</td>
+                <td>{{account.AnnualRevenue}}</td>
+                <td>{{account.Industry}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- This div is only displayed in mobile phones (see above for desktops) -->
+    <div class="visible-phone">
+        <form class="form-inline">
+            <input type="text" ng-model="searchTerm" class="input-medium search-query" placeholder="Search">
+            <button ng-click="doSearch(searchString)" class="btn btn-primary">Go</button>
+            <button ng-click="doCreate()" class="btn btn-default">&nbsp;+&nbsp;</button>
+        </form>
+
+
+        <table class="table">
+            <tr ng-click="doView(contact.Id)" ng-repeat="contact in contacts">
+                <td> {{account.Name}} {{account.Type}}, {{account.AnnualRevenue}}</td>
+                <td><i class="icon-chevron-right"></i></td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>

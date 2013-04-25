@@ -11,6 +11,7 @@ app.config(function ($routeProvider) {
         when('/view/:contactId', {controller: ContactViewCtrl, templateUrl: 'partials/contact/view.html'}).
         when('/edit/:contactId', {controller: ContactDetailCtrl, templateUrl: 'partials/contact/edit.html'}).
         when('/new', {controller: ContactDetailCtrl, templateUrl: 'partials/contact/edit.html'}).
+        when('/accounts', {controller: AccountListCtrl, templateUrl: 'partials/account/list.html'}).
         otherwise({redirectTo: '/'});
 });
 
@@ -25,6 +26,11 @@ app.config(function ($routeProvider) {
 angular.module('Contact', []).factory('Contact', function (AngularForceObjectFactory) {
     var Contact = AngularForceObjectFactory({type: 'Contact', fields: ['FirstName', 'LastName', 'Title', 'Phone', 'Email', 'Id'], where: '', limit: 10});
     return Contact;
+});
+
+angular.module('Account', []).factory('Account', function (AngularForceObjectFactory) {
+    var Account = AngularForceObjectFactory({type: 'Account', fields: ['Name', 'Type', 'Phone', 'Fax', 'Website', 'Industry', 'AnnualRevenue', 'NumberOfEmployees', 'Description', 'Id'], where: '', limit: 10});
+    return Account;
 });
 
 function HomeCtrl($scope, AngularForce, $location, $route) {
@@ -186,3 +192,44 @@ function ContactDetailCtrl($scope, AngularForce, $location, $routeParams, Contac
         }
     }
 }
+
+
+function AccountListCtrl($scope, AngularForce, $location, Account) {
+    $scope.authenticated = AngularForce.authenticated();
+    if (!$scope.authenticated) {
+        return $location.path('/login');
+    }
+
+
+    $scope.searchTerm = '';
+  
+    Account.query(function (data) {
+            $scope.accounts = data.records;
+            $scope.$apply();//Required coz sfdc uses jquery.ajax
+        }, function (data) {
+            alert('Query Error');
+        }, 'Select Id, Name, Type, Phone, Fax, Website, Industry, AnnualRevenue, NumberOfEmployees, Description From Account Order By Name Limit 20 ');
+
+
+    $scope.doSearch = function (searchTerm) {
+        Account.search(function (data) {
+            $scope.accounts = data;
+            $scope.$apply();//Required coz sfdc uses jquery.ajax
+        }, function (data) {
+        }, 'Find {' + escape($scope.searchTerm) + '*} IN ALL FIELDS RETURNING ACCOUNT (Id, Name, Type, Phone, Fax, Website, Industry, AnnualRevenue, NumberOfEmployees, Description)');
+
+
+    };
+
+
+    $scope.doView = function (accountId) {
+        $location.path('/view/' + accountId);
+    };
+
+
+    $scope.doCreate = function () {
+        $location.path('/new');
+    }
+}
+
+
